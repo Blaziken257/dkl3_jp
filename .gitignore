@@ -1,0 +1,8 @@
+# Prevent sharing ROMs or save files accidentally.
+*.gb
+*.gbc
+*.sav
+*.srm
+
+# Prevent committing compiled object code.
+*.o
