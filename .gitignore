@@ -6,3 +6,7 @@
 
 # Prevent committing compiled object code.
 *.o
+
+# Prevent committing literally any build products.
+build
+baserom
