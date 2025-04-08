@@ -4,7 +4,7 @@ BASE_DIR := baserom
 BUILD_DIR := build
 
 # Build DKL3
-ROM := ${BUILD_DIR}/baserom_dkl3_jp.gbc
+ROM := ${BUILD_DIR}/dkl3_jp.gbc
 BASEROM = ${BASE_DIR}/dkl3_jp.gbc
 OBJS := $(patsubst %.asm,%.o,$(shell find game/src -type f -name "*.asm")) # Fix this	
 
