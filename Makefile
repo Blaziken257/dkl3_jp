@@ -48,7 +48,7 @@ TITLE_TMAP := gfx/tilemaps/title_tmap.csv
 TITLE_TMAP_BIN := build/gfx/tilemaps/title_tmap.bin
 
 # ROM depends on tilemaps
-build/dkl3_jp.gbc: $(TITLE_TMAP_BIN)
+$(ROM): $(TILEMAP_BIN)
 
 # Build tilemap bin from CSV
 $(TITLE_TMAP_BIN): $(TITLE_TMAP) tools/build_tilemap.py
@@ -61,4 +61,3 @@ $(BUILD_DIR)/gfx/%.2bpp: gfx/%.png
 	rgbgfx -o $@ $<
 
 $(ROM): $(OBJS:%.o=${BUILD_DIR}/%.o) $(BPP_FILES)
-$(ROM): $(TILEMAP_BIN)
