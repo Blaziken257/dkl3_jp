@@ -14,6 +14,14 @@ CSV_COLORMAP := gfx/colormaps/title_color_tmap.csv
 TMAP := $(BUILD_DIR)/gfx/tilemaps/title_tmap.tmap
 COLORMAP := $(BUILD_DIR)/gfx/colormaps/title_color_tmap.tmap
 
+# Splash screen assets
+SPLASH_PNG := gfx/tilesets/splash.png
+SPLASH_2BPP := $(BUILD_DIR)/gfx/tilesets/splash.2bpp
+SPLASH_CSV := gfx/tilemaps/splash_tmap.csv
+SPLASH_COLORMAP_CSV := gfx/colormaps/splash_color_tmap.csv
+SPLASH_TMAP := $(BUILD_DIR)/gfx/tilemaps/splash_tmap.tmap
+SPLASH_COLORMAP := $(BUILD_DIR)/gfx/colormaps/splash_color_tmap.tmap
+	
 ASM_SRC := $(wildcard game/src/*.asm)
 OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
 
@@ -47,8 +55,20 @@ $(COLORMAP): $(CSV_COLORMAP) tools/build_tilemap.py
 	@mkdir -p $(dir $@)
 	python3 tools/build_tilemap.py $< > $@
 
+$(SPLASH_2BPP): $(SPLASH_PNG)
+	@mkdir -p $(dir $@)
+	rgbgfx $< -o $@
+
+$(SPLASH_TMAP): $(SPLASH_CSV) tools/build_tilemap.py
+	@mkdir -p $(dir $@)
+	python3 tools/build_tilemap.py $< > $@
+
+$(SPLASH_COLORMAP): $(SPLASH_COLORMAP_CSV) tools/build_tilemap.py
+	@mkdir -p $(dir $@)
+	python3 tools/build_tilemap.py $< > $@
+
 # Ensure ROM depends on assets
-$(OBJS): $(2BPP) $(TMAP) $(COLORMAP)
+$(OBJS): $(2BPP) $(TMAP) $(COLORMAP) $(SPLASH_2BPP) $(SPLASH_TMAP) $(SPLASH_COLORMAP)
 
 # Clean up build directory
 clean:
