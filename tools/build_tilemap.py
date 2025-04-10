@@ -5,11 +5,11 @@ import csv
 def build_tilemap(csv_path):
     with open(csv_path, newline='') as csvfile:
         reader = list(csv.reader(csvfile))
-        height = len(reader)
-        width = len(reader[0]) if height > 0 else 0
+        # height = len(reader)
+        # width = len(reader[0]) if height > 0 else 0
 
         # Output width and height as one byte each
-        sys.stdout.buffer.write(bytes([width, height]))
+        # sys.stdout.buffer.write(bytes([width, height]))
 
         for row in reader:
             row_bytes = [int(cell.strip()) for cell in row]
