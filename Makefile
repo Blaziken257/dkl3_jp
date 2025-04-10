@@ -9,7 +9,9 @@ BASEROM := $(BASE_DIR)/$(ROM_NAME).gbc
 PNG := gfx/tilesets/dkl3_j_title.png
 2BPP := $(BUILD_DIR)/gfx/tilesets/dkl3_j_title.2bpp
 CSV := gfx/tilemaps/title_tmap.csv
+CSV_COLORMAP := gfx/colormaps/title_color_tmap.csv
 TMAP := $(BUILD_DIR)/gfx/tilemaps/title_tmap.tmap
+COLORMAP := $(BUILD_DIR)/gfx/colormaps/title_color_tmap.tmap
 
 ASM_SRC := $(wildcard game/src/*.asm)
 OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
@@ -39,8 +41,13 @@ $(TMAP): $(CSV) tools/build_tilemap.py
 	@mkdir -p $(dir $@)
 	python3 tools/build_tilemap.py $< > $@
 
+# Convert CSV to .tmap
+$(COLORMAP): $(CSV_COLORMAP) tools/build_tilemap.py
+	@mkdir -p $(dir $@)
+	python3 tools/build_tilemap.py $< > $@
+
 # Ensure ROM depends on assets
-$(OBJS): $(2BPP) $(TMAP)
+$(OBJS): $(2BPP) $(TMAP) $(COLORMAP)
 
 # The compare target is a shortcut to check that the build matches the original roms exactly.
 # This is for contributors to make sure a change didn't affect the contents of the rom.
