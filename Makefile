@@ -19,27 +19,6 @@ TMAP_FILES := $(foreach t,$(TILEMAPS),$(BUILD_DIR)/gfx/tilemaps/$(t)_tmap.tmap)
 
 CSV_COLORMAP_FILES := $(foreach c,$(COLORMAPS),gfx/colormaps/$(c)_color_tmap.csv)
 COLORMAP_FILES := $(foreach c,$(COLORMAPS),$(BUILD_DIR)/gfx/colormaps/$(c)_color_tmap.tmap)
-
-
-# PNG := gfx/tilesets/dkl3_title.png
-# 2BPP := $(BUILD_DIR)/gfx/tilesets/dkl3_title.2bpp
-# CSV := gfx/tilemaps/title_tmap.csv
-# CSV_COLORMAP := gfx/colormaps/title_color_tmap.csv
-# TMAP := $(BUILD_DIR)/gfx/tilemaps/title_tmap.tmap
-# COLORMAP := $(BUILD_DIR)/gfx/colormaps/title_color_tmap.tmap
-
-# # Splash screen assets
-# SPLASH_PNG := gfx/tilesets/splash.png
-# SPLASH_2BPP := $(BUILD_DIR)/gfx/tilesets/splash.2bpp
-# SPLASH_CSV := gfx/tilemaps/splash_tmap.csv
-# SPLASH_COLORMAP_CSV := gfx/colormaps/splash_color_tmap.csv
-# SPLASH_TMAP := $(BUILD_DIR)/gfx/tilemaps/splash_tmap.tmap
-# SPLASH_COLORMAP := $(BUILD_DIR)/gfx/colormaps/splash_color_tmap.tmap
-
-# DMG_PNG := gfx/tilesets/dmg.png
-# DMG_2BPP := $(BUILD_DIR)/gfx/tilesets/dmg.2bpp
-# DMG_CSV := gfx/tilemaps/dmg_tmap.csv
-# DMG_TMAP := $(BUILD_DIR)/gfx/tilemaps/dmg_tmap.tmap
 	
 ASM_SRC := $(wildcard game/src/*.asm)
 OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
