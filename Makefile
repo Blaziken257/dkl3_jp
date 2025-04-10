@@ -70,12 +70,6 @@ $(SPLASH_COLORMAP): $(SPLASH_COLORMAP_CSV) tools/build_tilemap.py
 # Ensure ROM depends on assets
 $(OBJS): $(2BPP) $(TMAP) $(COLORMAP) $(SPLASH_2BPP) $(SPLASH_TMAP) $(SPLASH_COLORMAP)
 
-# The compare target is a shortcut to check that the build matches the original roms exactly.
-# This is for contributors to make sure a change didn't affect the contents of the rom.
-# More thorough comparison can be made by diffing the output of hexdump -C against both roms.
-compare_roms: $(ROM) $(BASEROM)
-	@cmp $^ && echo "ROM matches baserom."
-
 # Clean up build directory
 clean:
 	@echo "Cleaning..."
