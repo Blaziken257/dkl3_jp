@@ -6,8 +6,8 @@ ROM_NAME := dkl3_jp
 ROM := $(BUILD_DIR)/$(ROM_NAME).gbc
 BASEROM := $(BASE_DIR)/$(ROM_NAME).gbc
 
-PNG := gfx/tilesets/dkl3_j_title.png
-2BPP := $(BUILD_DIR)/gfx/tilesets/dkl3_j_title.2bpp
+PNG := gfx/tilesets/dkl3_title.png
+2BPP := $(BUILD_DIR)/gfx/tilesets/dkl3_title.2bpp
 CSV := gfx/tilemaps/title_tmap.csv
 CSV_COLORMAP := gfx/colormaps/title_color_tmap.csv
 TMAP := $(BUILD_DIR)/gfx/tilemaps/title_tmap.tmap
