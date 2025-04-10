@@ -6,5 +6,5 @@ TitleScreen::
 
 SECTION "Title Screen Tilemap", ROMX[$5001], BANK[$23]
 title_screen_tilemap:
-    db 20, 18 ; Width, height (in tiles)
-    INCBIN "build/gfx/tilesets/title_screen.tmap"
+    db $20, $20 ; Width, height (in tiles)
+    INCBIN "build/gfx/tilemaps/title_tmap.tmap"
