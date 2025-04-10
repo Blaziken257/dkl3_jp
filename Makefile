@@ -3,7 +3,8 @@
 BASE_DIR := baserom
 BUILD_DIR := build
 ROM_NAME := dkl3_jp
-ROM := $(BUILD_DIR)/$(ROM_NAME).gbc
+PATCH_ROM_NAME = dkl3_en
+ROM := $(BUILD_DIR)/$(PATCH_ROM_NAME).gbc
 BASEROM := $(BASE_DIR)/$(ROM_NAME).gbc
 
 PNG := gfx/tilesets/dkl3_title.png
