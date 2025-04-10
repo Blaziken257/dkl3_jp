@@ -1,4 +1,4 @@
-.PHONY: all clean compare_roms
+.PHONY: all clean
 
 BASE_DIR := baserom
 BUILD_DIR := build
@@ -24,9 +24,6 @@ SPLASH_COLORMAP := $(BUILD_DIR)/gfx/colormaps/splash_color_tmap.tmap
 	
 ASM_SRC := $(wildcard game/src/*.asm)
 OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
-
-# Default target
-all: $(ROM) compare_roms
 
 # Rule for building the final ROM
 $(ROM): $(OBJS)
