@@ -21,14 +21,6 @@ SPLASH_COLORMAP_CSV := gfx/colormaps/splash_color_tmap.csv
 SPLASH_TMAP := $(BUILD_DIR)/gfx/tilemaps/splash_tmap.tmap
 SPLASH_COLORMAP := $(BUILD_DIR)/gfx/colormaps/splash_color_tmap.tmap
 
-# Splash screen assets
-SPLASH_PNG := gfx/tilesets/splash.png
-SPLASH_2BPP := $(BUILD_DIR)/gfx/tilesets/splash.2bpp
-SPLASH_CSV := gfx/tilemaps/splash_tmap.csv
-SPLASH_COLORMAP_CSV := gfx/colormaps/splash_color_tmap.csv
-SPLASH_TMAP := $(BUILD_DIR)/gfx/tilemaps/splash_tmap.tmap
-SPLASH_COLORMAP := $(BUILD_DIR)/gfx/colormaps/splash_color_tmap.tmap
-
 DMG_PNG := gfx/tilesets/dmg.png
 DMG_2BPP := $(BUILD_DIR)/gfx/tilesets/dmg.2bpp
 DMG_CSV := gfx/tilemaps/dmg_tmap.csv
