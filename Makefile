@@ -6,7 +6,7 @@ ROM_NAME := dkl3_jp
 ROM := $(BUILD_DIR)/$(ROM_NAME).gbc
 BASEROM := $(BASE_DIR)/$(ROM_NAME).gbc
 
-TILESETS := dkl3_title splash dmg
+TILESETS := dkl3_title splash dmg charset
 TILEMAPS := title splash dmg
 COLORMAPS := title splash
 
