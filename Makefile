@@ -26,8 +26,9 @@ DMG_2BPP := $(BUILD_DIR)/gfx/tilesets/dmg.2bpp
 DMG_CSV := gfx/tilemaps/dmg_tmap.csv
 DMG_TMAP := $(BUILD_DIR)/gfx/tilemaps/dmg_tmap.tmap
 	
-ASM_SRC := $(wildcard game/src/*.asm)
-OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
+ASM_SRC := $(shell find game/src -name '*.asm')
+OBJS := $(patsubst %.asm,$(BUILD_DIR)/%.o,$(ASM_SRC))
+
 
 # Default target
 all: $(ROM) compare_roms
@@ -40,7 +41,7 @@ $(ROM): $(OBJS)
 	@echo "Built $@"
 
 # Assemble .asm into .o
-$(BUILD_DIR)/game/src/%.o: game/src/%.asm
+$(BUILD_DIR)/%.o: %.asm
 	@mkdir -p $(dir $@)
 	rgbasm $< -o $@
 
