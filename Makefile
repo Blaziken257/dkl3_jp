@@ -6,29 +6,22 @@ ROM_NAME := dkl3_jp
 ROM := $(BUILD_DIR)/$(ROM_NAME).gbc
 BASEROM := $(BASE_DIR)/$(ROM_NAME).gbc
 
-PNG := gfx/tilesets/dkl3_title.png
-2BPP := $(BUILD_DIR)/gfx/tilesets/dkl3_title.2bpp
-CSV := gfx/tilemaps/title_tmap.csv
-CSV_COLORMAP := gfx/colormaps/title_color_tmap.csv
-TMAP := $(BUILD_DIR)/gfx/tilemaps/title_tmap.tmap
-COLORMAP := $(BUILD_DIR)/gfx/colormaps/title_color_tmap.tmap
+TILESETS := dkl3_title splash dmg charset
+TILEMAPS := title splash dmg
+COLORMAPS := title splash
 
-# Splash screen assets
-SPLASH_PNG := gfx/tilesets/splash.png
-SPLASH_2BPP := $(BUILD_DIR)/gfx/tilesets/splash.2bpp
-SPLASH_CSV := gfx/tilemaps/splash_tmap.csv
-SPLASH_COLORMAP_CSV := gfx/colormaps/splash_color_tmap.csv
-SPLASH_TMAP := $(BUILD_DIR)/gfx/tilemaps/splash_tmap.tmap
-SPLASH_COLORMAP := $(BUILD_DIR)/gfx/colormaps/splash_color_tmap.tmap
+# Paths to source graphics
+PNG_FILES := $(foreach t,$(TILESETS),gfx/tilesets/$(t).png)
+2BPP_FILES := $(foreach t,$(TILESETS),$(BUILD_DIR)/gfx/tilesets/$(t).2bpp)
 
-DMG_PNG := gfx/tilesets/dmg.png
-DMG_2BPP := $(BUILD_DIR)/gfx/tilesets/dmg.2bpp
-DMG_CSV := gfx/tilemaps/dmg_tmap.csv
-DMG_TMAP := $(BUILD_DIR)/gfx/tilemaps/dmg_tmap.tmap
+CSV_TMAP_FILES := $(foreach t,$(TILEMAPS),gfx/tilemaps/$(t)_tmap.csv)
+TMAP_FILES := $(foreach t,$(TILEMAPS),$(BUILD_DIR)/gfx/tilemaps/$(t)_tmap.tmap)
+
+CSV_COLORMAP_FILES := $(foreach c,$(COLORMAPS),gfx/colormaps/$(c)_color_tmap.csv)
+COLORMAP_FILES := $(foreach c,$(COLORMAPS),$(BUILD_DIR)/gfx/colormaps/$(c)_color_tmap.tmap)
 	
-ASM_SRC := $(shell find game/src -name '*.asm')
-OBJS := $(patsubst %.asm,$(BUILD_DIR)/%.o,$(ASM_SRC))
-
+ASM_SRC := $(wildcard game/src/*.asm)
+OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
 
 # Default target
 all: $(ROM) compare_roms
@@ -43,45 +36,25 @@ $(ROM): $(OBJS)
 # Assemble .asm into .o
 $(BUILD_DIR)/%.o: %.asm
 	@mkdir -p $(dir $@)
-	rgbasm $< -o $@
+	rgbasm -o $@ $<
 
-# Convert PNG to 2bpp
-$(2BPP): $(PNG)
+# Convert .png to .2bpp
+$(BUILD_DIR)/gfx/tilesets/%.2bpp: gfx/tilesets/%.png
 	@mkdir -p $(dir $@)
 	rgbgfx $< -o $@
 
-# Convert CSV to .tmap
-$(TMAP): $(CSV) tools/build_tilemap.py
+# Convert tilemap .csv to .tmap
+$(BUILD_DIR)/gfx/tilemaps/%_tmap.tmap: gfx/tilemaps/%_tmap.csv tools/build_tilemap.py
 	@mkdir -p $(dir $@)
 	python3 tools/build_tilemap.py $< > $@
 
-# Convert CSV to .tmap
-$(COLORMAP): $(CSV_COLORMAP) tools/build_tilemap.py
-	@mkdir -p $(dir $@)
-	python3 tools/build_tilemap.py $< > $@
-
-$(SPLASH_2BPP): $(SPLASH_PNG)
-	@mkdir -p $(dir $@)
-	rgbgfx $< -o $@
-
-$(SPLASH_TMAP): $(SPLASH_CSV) tools/build_tilemap.py
-	@mkdir -p $(dir $@)
-	python3 tools/build_tilemap.py $< > $@
-
-$(SPLASH_COLORMAP): $(SPLASH_COLORMAP_CSV) tools/build_tilemap.py
-	@mkdir -p $(dir $@)
-	python3 tools/build_tilemap.py $< > $@
-
-$(DMG_2BPP): $(DMG_PNG)
-	@mkdir -p $(dir $@)
-	rgbgfx $< -o $@
-
-$(DMG_TMAP): $(DMG_CSV) tools/build_tilemap.py
+# Convert colormap .csv to .tmap
+$(BUILD_DIR)/gfx/colormaps/%_color_tmap.tmap: gfx/colormaps/%_color_tmap.csv tools/build_tilemap.py
 	@mkdir -p $(dir $@)
 	python3 tools/build_tilemap.py $< > $@
 
 # Ensure ROM depends on assets
-$(OBJS): $(2BPP) $(TMAP) $(COLORMAP) $(SPLASH_2BPP) $(SPLASH_TMAP) $(SPLASH_COLORMAP) $(DMG_2BPP) $(DMG_TMAP)
+$(OBJS): $(2BPP_FILES) $(TMAP_FILES) $(COLORMAP_FILES)
 
 # The compare target is a shortcut to check that the build matches the original roms exactly.
 # This is for contributors to make sure a change didn't affect the contents of the rom.
