@@ -257,7 +257,19 @@ MapAnim_Blackforest:
 
 SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
 MapAnim_GreatLakes:
-    ret
+    ld   bc,$94E0
+    ld   de,$95A0
+    call MapAnim_Waterfall
+    ld   bc,$8910
+    call MapAnim_Wrinkly
+    ld   bc,$8B00
+    ld   de,$8B50
+    call MapAnim_SheepyShop
+    ld   bc,$9540
+    ld   de,$95D0
+    call MapAnim_FactorySmoke
+    jp   MapAnim_Water
+
 SECTION "Map Animation - The Lost World", ROMX[$41C8], BANK[$25]
 MapAnim_LostWorld:
     ret
