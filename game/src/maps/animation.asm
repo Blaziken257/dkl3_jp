@@ -2,8 +2,8 @@ INCLUDE "registers.inc"
 INCLUDE "macros.asm"
 
 ; Initial work to animate world maps, which is missing in the Japanese version.
-; This actually takes the code present in the retail English version and ports it over here.
-; Only Cape Codswallop is present for now.
+; This actually takes the code present in the retail English version (starts at 5:614A there) and ports it over here.
+; Only Cape Codswallop and Primate Plains are present for now.
 
 DEF wCurrentWorld EQU $FFAD
 DEF wFrameCounter EQU $DE9E
@@ -42,7 +42,7 @@ SECTION "Map Animation - Cape Codswallop", ROMX[$401C], BANK[$25]
 MapAnim_Codswallop:
     ld   a, [wFrameCounter]  ; DE9E
     and  $07
-    and  a
+    and  a  ; Might be redundant, this was present in the original English version
     jp   nz, .afterMillAnim
 
     ld   hl, wMapAnimCounter ; DF8B
@@ -86,7 +86,7 @@ MapAnim_Codswallop:
 .afterMillAnim:
     ld   bc, $8AA0
     ld   de, $8B70
-    call MapAnim_SheepyShop_1
+    call MapAnim_SheepyShop
     call MapAnim_Water
 
     ld   a, [wFrameCounter]  ; DE9E
@@ -126,10 +126,102 @@ MapAnim_NorthernKremisphere:
     ret
 SECTION "Map Animation - Primate Plains", ROMX[$40AC], BANK[$25]
 MapAnim_PrimatePlains:
-    ret
+    ld   a, [wFrameCounter]
+    and  3
+    cp   2
+    jp   nz, .label40E3
+    call $3690
+    ld   c, 0
+    and  3
+    cp   1
+    jp   nz, .label40C4
+    ld   c, $40
+; TODO: Clarify lables from bgb dump
+.label40C4:
+    ld   b, 0
+    ld   hl, $51B4
+    add  hl, bc
+    ld   bc, $9490
+    ld   e, 2
+    ld   d, $1F
+    call $3309
+    ld   b, 0
+    ld   c, $20
+    add  hl, bc
+    ld   bc, $9550
+    ld   e, 2
+    ld   d, $1F
+    call $3309
+
+.label40E3:
+    ld   a, [wFrameCounter]
+    and  7
+    and  a
+    jp   nz, .label412F
+    ld   hl, $DF8B
+    ld   a, [hl]
+    inc  a
+    cp   3
+    jp   c, .label40F7
+    xor  a
+
+.label40F7:
+    ld   [hl],a
+    sla  a
+    sla  a
+    sla  a
+    sla  a
+    ld   b, 0
+    ld   c, a
+    ld   hl, $5274
+    add  hl, bc
+    ld   d, $1F
+    ld   bc, $9400
+    ld   e, 1
+    call $3309
+    ld   b, 0
+    ld   c, $30
+    add  hl, bc
+    ld   bc, $94F0
+    ld   e, 1
+    ld   d, $1F
+    call $3309
+    ld   b, 0
+    ld   c, $30
+    add  hl, bc
+    ld   bc, $95E0
+    ld   e, 1
+    ld   d, $1F
+    call $3311
+
+.label412F:
+    ld   a, [wFrameCounter]
+    and  3
+    and  a
+    jp   nz,.label4156
+    call $3690
+    ld   c, 0
+    and  $0F
+    cp   7
+    jp   nz,.label4146
+    ld   c, $20
+
+.label4146:
+    ld   b, 0
+    ld   hl, $5304
+    add  hl, bc
+    ld   bc, $88E0
+    ld   e, 2
+    ld   d, $1F
+    call $3309
+
+.label4156:
+    jp   $4201
+
 SECTION "Map Animation - Blackforest Plateau", ROMX[$4159], BANK[$25]
 MapAnim_Blackforest:
     ret
+
 SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
 MapAnim_GreatLakes:
     ret
@@ -171,10 +263,32 @@ MapAnim_Water:
     jp   $3311
 
 
-SECTION "Map Animation - Sheepy Shop 1", ROMX[$428D], BANK[$25]
-MapAnim_SheepyShop_1:
+SECTION "Map Animation - Wrinkly Refuge", ROMX[$4268], BANK[$25]
+MapAnim_Wrinkly:
     ld   a, [wFrameCounter]
     and  a, 3
+    cp   a, 2
+    ret  nz
+    push bc
+    call $3690
+    ld   c, 0
+    and  a, 3
+    cp   a, 1
+    jp   nz, .label427F
+    ld   c, $20
+.label427F:
+    ld   b, 0
+    ld   hl, $5234
+    add  hl, bc
+    pop  bc
+    ld   e, 2
+    ld   d, $1F
+    jp   $3309
+
+SECTION "Map Animation - Sheepy Shop", ROMX[$428D], BANK[$25]
+MapAnim_SheepyShop:
+    ld   a, [wFrameCounter]
+    and  3
     and  a
     ret  nz
     push de
@@ -200,14 +314,17 @@ MapAnim_SheepyShop_1:
     ld   e, $02
     ld   d, $1F
     jp   $3311
+  
+SECTION "Map Animation - Factory Smoke", ROMX[$42BF], BANK[$25]
+MapAnim_FactorySmoke:
     push de
     push bc
     ld   c, 0
     ld   a, [wFrameCounter]
-    and  a, $10
-    jp   nz, label42CD
+    and  $10
+    jp   nz, .label42CD
     ld   c, $30
-    label42CD:
+.label42CD:
     ld   b, 0
     ld   hl, $46EC
     add  hl, bc
@@ -215,11 +332,10 @@ MapAnim_SheepyShop_1:
     ld   e, 1
     ld   d, $1F
     call $3309
-    ld   b,0 
+    ld   b, 0
     ld   c, $10
     add  hl, bc
     pop  bc
-    ld   e, $02
+    ld   e, 2
     ld   d, $1F
     jp   $3309
-  
