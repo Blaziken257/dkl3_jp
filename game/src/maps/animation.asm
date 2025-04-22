@@ -1,8 +1,5 @@
 INCLUDE "registers.inc"
-
-MACRO dwbe
-    db HIGH(\1), LOW(\1)
-ENDM
+INCLUDE "macros.asm"
 
 ; Initial work to animate world maps, which is missing in the Japanese version.
 ; This actually takes the code present in the retail English version and ports it over here.
