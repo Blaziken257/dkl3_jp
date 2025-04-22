@@ -21,7 +21,7 @@ TMAP_FILES := $(foreach t,$(TILEMAPS),$(BUILD_DIR)/gfx/tilemaps/$(t)_tmap.tmap)
 CSV_COLORMAP_FILES := $(foreach c,$(COLORMAPS),gfx/colormaps/$(c)_color_tmap.csv)
 COLORMAP_FILES := $(foreach c,$(COLORMAPS),$(BUILD_DIR)/gfx/colormaps/$(c)_color_tmap.tmap)
 	
-ASM_SRC := $(wildcard game/src/*.asm)
+ASM_SRC := $(shell find game/src -name '*.asm')
 OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
 
 # Rule for building the final ROM
