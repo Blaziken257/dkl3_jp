@@ -123,7 +123,7 @@ MapAnim_Codswallop:
 
 SECTION "Map Animation - Northern Kremisphere", ROMX[$41C5], BANK[$25]
 MapAnim_NorthernKremisphere:
-    ret
+    jp   MapAnim_Water
 SECTION "Map Animation - Primate Plains", ROMX[$40AC], BANK[$25]
 MapAnim_PrimatePlains:
     ld   a, [wFrameCounter]
