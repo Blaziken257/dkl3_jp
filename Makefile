@@ -31,7 +31,8 @@ $(ROM): $(OBJS)
 	rgbfix -v -C -k 01 -l 0x33 -m 0x1B -p 0 -n 0 -r 2 -t "DONKEY KONG" -i "AD3J" $@
 	@echo "Built $@"
 
-$(BUILD_DIR)/game/src/%.o: game/src/%.asm
+# Assemble .asm into .o
+$(BUILD_DIR)/%.o: %.asm
 	@mkdir -p $(dir $@)
 	rgbasm -o $@ $<
 
