@@ -10,6 +10,5 @@ This branch does not include bug fixes or enhancements unrelated to translating 
 
 To build, you need:
 
-- A retail ROM in baseroms/baserom_dkl3_jp.gbc. This disassembly does not provide one so you must dump it yourself. The md5sum is 22AFE691095C65F34AEABA3C283B2A9C
-- rgbds. This was built for version 0.9.1 so older versions may work but are unsupported.
-
+- A retail ROM in `baseroms/baserom_dkl3_jp.gbc`. This disassembly does not provide one so you must dump it yourself. The md5sum is `22AFE691095C65F34AEABA3C283B2A9C`
+- rgbds. This was built for version 0.9.1 so older versions are unsupported.
