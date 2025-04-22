@@ -1,10 +1,9 @@
-.PHONY: all clean
+.PHONY: all clean compare_roms
 
 BASE_DIR := baserom
 BUILD_DIR := build
 ROM_NAME := dkl3_jp
-PATCH_ROM_NAME = dkl3_plus
-ROM := $(BUILD_DIR)/$(PATCH_ROM_NAME).gbc
+ROM := $(BUILD_DIR)/$(ROM_NAME).gbc
 BASEROM := $(BASE_DIR)/$(ROM_NAME).gbc
 
 TILESETS := dkl3_title splash dmg charset
@@ -21,8 +20,11 @@ TMAP_FILES := $(foreach t,$(TILEMAPS),$(BUILD_DIR)/gfx/tilemaps/$(t)_tmap.tmap)
 CSV_COLORMAP_FILES := $(foreach c,$(COLORMAPS),gfx/colormaps/$(c)_color_tmap.csv)
 COLORMAP_FILES := $(foreach c,$(COLORMAPS),$(BUILD_DIR)/gfx/colormaps/$(c)_color_tmap.tmap)
 	
-ASM_SRC := $(shell find game/src -name '*.asm')
+ASM_SRC := $(wildcard game/src/*.asm)
 OBJS := $(patsubst game/src/%.asm,$(BUILD_DIR)/game/src/%.o,$(ASM_SRC))
+
+# Default target
+all: $(ROM) compare_roms
 
 # Rule for building the final ROM
 $(ROM): $(OBJS)
@@ -31,6 +33,7 @@ $(ROM): $(OBJS)
 	rgbfix -v -C -k 01 -l 0x33 -m 0x1B -p 0 -n 0 -r 2 -t "DONKEY KONG" -i "AD3J" $@
 	@echo "Built $@"
 
+# Assemble .asm into .o
 $(BUILD_DIR)/%.o: %.asm
 	@mkdir -p $(dir $@)
 	rgbasm -o $@ $<
@@ -52,6 +55,12 @@ $(BUILD_DIR)/gfx/colormaps/%_color_tmap.tmap: gfx/colormaps/%_color_tmap.csv too
 
 # Ensure ROM depends on assets
 $(OBJS): $(2BPP_FILES) $(TMAP_FILES) $(COLORMAP_FILES)
+
+# The compare target is a shortcut to check that the build matches the original roms exactly.
+# This is for contributors to make sure a change didn't affect the contents of the rom.
+# More thorough comparison can be made by diffing the output of hexdump -C against both roms.
+compare_roms: $(ROM) $(BASEROM)
+	@cmp $^ && echo "ROM matches baserom."
 
 # Clean up build directory
 clean:
