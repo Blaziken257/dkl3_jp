@@ -158,7 +158,7 @@ MapAnim_PrimatePlains:
     and  7
     and  a
     jp   nz, .label412F
-    ld   hl, $DF8B
+    ld   hl, wMapAnimCounter
     ld   a, [hl]
     inc  a
     cp   3
@@ -216,11 +216,44 @@ MapAnim_PrimatePlains:
     call $3309
 
 .label4156:
-    jp   $4201
+    jp   MapAnim_Water
 
 SECTION "Map Animation - Blackforest Plateau", ROMX[$4159], BANK[$25]
 MapAnim_Blackforest:
-    ret
+    ld   bc, $9550
+    call MapAnim_Wrinkly
+    ld   a, [wFrameCounter]
+    and  3
+    and  a
+    jp   nz, $4195
+    call $3690
+    ld   c, 0
+    and  $0F
+    cp   7
+    jp   nz, .label4176
+    ld   c, $30
+.label4176:
+    ld   b, 0
+    ld   hl, $5344
+    add  hl, bc
+    ld   bc, $9410
+    ld   e, 2
+    ld   d, $1F
+    call $3309
+    ld   b, 0
+    ld   c, $20
+    add  hl, bc
+    ld   bc, $94E0
+    ld   e, 1
+    ld   d, $1F
+    call $3309
+    ld   bc, $88B0
+    ld   de, $89D0
+    call $422D
+    jp   MapAnim_Water
+
+
+
 
 SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
 MapAnim_GreatLakes:
@@ -231,6 +264,50 @@ MapAnim_LostWorld:
 SECTION "Map Animation - Tin Can Valley", ROMX[$41E0], BANK[$25]
 MapAnim_TinCanValley:
     ret
+
+SECTION "Map Animation - Waterfall", ROMX[$422D], BANK[$25]
+MapAnim_Waterfall:
+    ld   a, [wFrameCounter]
+    and  7
+    and  a
+    ret  nz
+    push de
+    push bc
+    ld   hl, wMapAnimCounter
+    ld   a, [hl]
+    inc  a
+    cp   3
+    jp   c, .label4241
+    xor  a
+
+.label4241:
+    ld   [hl], a
+    sla  a
+    sla  a
+    sla  a
+    sla  a
+    sla  a
+    ld   b, 0
+    ld   c, a
+    ld   hl, $53A4
+    add  hl, bc
+    ld   d, $1F
+    pop  bc
+    ld   e, 1
+    call $3309
+    ld   b, 0
+    ld   c, $10
+    add  hl, bc
+    pop  bc
+    ld   e, 1
+    ld   d, $1F
+    jp   $3309
+
+
+
+
+
+
 
 SECTION "Map Animation - Water", ROMX[$4201], BANK[$25]
 MapAnim_Water:
