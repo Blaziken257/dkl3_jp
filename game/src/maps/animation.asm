@@ -120,10 +120,10 @@ MapAnim_Codswallop:
 .skipCrank:
     ret  
 
-
 SECTION "Map Animation - Northern Kremisphere", ROMX[$41C5], BANK[$25]
 MapAnim_NorthernKremisphere:
     jp   MapAnim_Water
+
 SECTION "Map Animation - Primate Plains", ROMX[$40AC], BANK[$25]
 MapAnim_PrimatePlains:
     ld   a, [wFrameCounter]
@@ -136,6 +136,7 @@ MapAnim_PrimatePlains:
     cp   1
     jp   nz, .label40C4
     ld   c, $40
+
 ; TODO: Clarify lables from bgb dump
 .label40C4:
     ld   b, 0
@@ -232,6 +233,7 @@ MapAnim_Blackforest:
     cp   7
     jp   nz, .label4176
     ld   c, $30
+
 .label4176:
     ld   b, 0
     ld   hl, $5344
@@ -251,9 +253,6 @@ MapAnim_Blackforest:
     ld   de, $89D0
     call $422D
     jp   MapAnim_Water
-
-
-
 
 SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
 MapAnim_GreatLakes:
@@ -314,12 +313,6 @@ MapAnim_Waterfall:
     ld   e, 1
     ld   d, $1F
     jp   $3309
-
-
-
-
-
-
 
 SECTION "Map Animation - Water", ROMX[$4201], BANK[$25]
 MapAnim_Water:
