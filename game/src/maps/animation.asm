@@ -1,14 +1,225 @@
-include "registers.inc"
+INCLUDE "registers.inc"
+INCLUDE "macros.asm"
 
+; Initial work to animate world maps, which is missing in the Japanese version.
+; This actually takes the code present in the retail English version and ports it over here.
+; Only Cape Codswallop is present for now.
+
+DEF wCurrentWorld EQU $FFAD
+DEF wFrameCounter EQU $DE9E
+DEF wMapAnimCounter EQU $DF8B
+
+; Repoint the dummied subroutine to a new, empty bank, since there's so much
+; empty space in the Japanese ROM
 SECTION "Map Animation Routine", ROM0[$125D]
-    ld   a, $05
+    ld   a, $25
     ld   [REG_MBC5_ROMBANK], a
     call MapAnimCallback
 
-SECTION "Map Animation Callback", ROMX[$4910], BANK[$05]
+SECTION "Map Animation Callback", ROMX[$4000], BANK[$25]
 MapAnimCallback:
-; The subroutine to animate maps is still present in the Japanese version, but was reduced to a "ret" instruction.
-; This has its origins in a Japanese prototype, part of the September 2020 Gigaleak, where there wasn't enough ROM space for this.
-; (The Japanese prototype was still 512 KB, and expanded credits, which are in the same bank. For whatever reason, even though the final
-; Japanese version was doubled to 1 MB, the missing code wasn't restored!)
+    ldh  a, [wCurrentWorld] ; ffad
+    ld   hl, .MapTable
+    add  a
+    ld   c, a
+    ld   b, 0
+    add  hl, bc
+    ldi  a, [hl]
+    ld   l, [hl]
+    ld   h, a
+    jp   hl
+
+.MapTable:
+    dwbe MapAnim_Codswallop
+    dwbe MapAnim_PrimatePlains
+    dwbe MapAnim_Blackforest
+    dwbe MapAnim_GreatLakes
+    dwbe MapAnim_TinCanValley
+    dwbe MapAnim_LostWorld
+    dwbe MapAnim_NorthernKremisphere
+
+SECTION "Map Animation - Cape Codswallop", ROMX[$401C], BANK[$25]
+MapAnim_Codswallop:
+    ld   a, [wFrameCounter]  ; DE9E
+    and  $07
+    and  a
+    jp   nz, .afterMillAnim
+
+    ld   hl, wMapAnimCounter ; DF8B
+    ld   a, [hl]
+    inc  a
+    cp   3
+    jp   c, .storeNewCounter
+    xor  a
+
+.storeNewCounter:
+    ld   [hl], a
+    sla  a
+    sla  a
+    sla  a
+    sla  a
+    ld   b, 0
+    ld   c, a
+    ld   hl, $4F24
+    add  hl, bc
+    ld   d, $1F
+    ld   bc, $9290
+    ld   e, 1
+    call $3309
+
+    ld   b, 0
+    ld   c, $30
+    add  hl, bc
+    ld   bc, $9370
+    ld   e, 1
+    ld   d, $1F
+    call $3309
+
+    ld   b, 0
+    ld   c, $30
+    add  hl, bc
+    ld   bc, $9490
+    ld   e, 1
+    ld   d, $1F
+    call $3311
+
+.afterMillAnim:
+    ld   bc, $8AA0
+    ld   de, $8B70
+    call MapAnim_SheepyShop_1
+    call MapAnim_Water
+
+    ld   a, [wFrameCounter]  ; DE9E
+    and  $03
+    cp   2
+    jp   nz, .skipCrank
+    call $3690
+    ld   c, 0
+    and  $03
+    cp   1
+    jp   nz, .skipOffset
+    ld   c, $20
+
+.skipOffset:
+    ld   b, 0
+    ld   hl, $5174
+    add  hl, bc
+    ld   bc, $9390
+    ld   e, 1
+    ld   d, $1F
+    call $3309
+
+    ld   b, 0
+    ld   c, $10
+    add  hl, bc
+    ld   bc, $94C0
+    ld   e, 1
+    ld   d, $1F
+    call $3311
+
+.skipCrank:
+    ret  
+
+
+SECTION "Map Animation - Northern Kremisphere", ROMX[$41C5], BANK[$25]
+MapAnim_NorthernKremisphere:
     ret
+SECTION "Map Animation - Primate Plains", ROMX[$40AC], BANK[$25]
+MapAnim_PrimatePlains:
+    ret
+SECTION "Map Animation - Blackforest Plateau", ROMX[$4159], BANK[$25]
+MapAnim_Blackforest:
+    ret
+SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
+MapAnim_GreatLakes:
+    ret
+SECTION "Map Animation - The Lost World", ROMX[$41C8], BANK[$25]
+MapAnim_LostWorld:
+    ret
+SECTION "Map Animation - Tin Can Valley", ROMX[$41E0], BANK[$25]
+MapAnim_TinCanValley:
+    ret
+
+SECTION "Map Animation - Water", ROMX[$4201], BANK[$25]
+MapAnim_Water:
+    ld   hl, $DF8C
+    ld   a, [hl]
+    inc  a
+    cp   12
+    jp   nz, .label420F
+    inc  hl
+    inc  [hl]
+    dec  hl
+    xor  a
+.label420F:
+    ldi  [hl], a
+    ld   a, [hl]
+    and  3
+    ld   hl, $5034
+    ld   b, 0
+    ld   c, $50
+.label421A:
+    and  a
+    jp   z, .label4223
+    dec  a
+    add  hl, bc
+    jp   .label421A
+.label4223:
+    ld   bc, $9010
+    ld   e, 5
+    ld   d, $1F
+    jp   $3311
+
+
+SECTION "Map Animation - Sheepy Shop 1", ROMX[$428D], BANK[$25]
+MapAnim_SheepyShop_1:
+    ld   a, [wFrameCounter]
+    and  a, 3
+    and  a
+    ret  nz
+    push de
+    push bc
+    call $3690
+    ld   c, 0
+    and  $0F
+    cp   7
+    jp   nz,label42A4
+    ld   c, $40
+    label42A4:
+    ld   b, 0
+    ld   hl, $4FB4
+    add  hl, bc
+    pop  bc
+    ld   e, 2
+    ld   d, $1F
+    call $3309
+    ld   b, 0
+    ld   c, $20
+    add  hl, bc
+    pop  bc
+    ld   e, $02
+    ld   d, $1F
+    jp   $3311
+    push de
+    push bc
+    ld   c, 0
+    ld   a, [wFrameCounter]
+    and  a, $10
+    jp   nz, label42CD
+    ld   c, $30
+    label42CD:
+    ld   b, 0
+    ld   hl, $46EC
+    add  hl, bc
+    pop  bc
+    ld   e, 1
+    ld   d, $1F
+    call $3309
+    ld   b,0 
+    ld   c, $10
+    add  hl, bc
+    pop  bc
+    ld   e, $02
+    ld   d, $1F
+    jp   $3309
+  
