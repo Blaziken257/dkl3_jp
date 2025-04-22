@@ -1,6 +1,10 @@
 # Donkey Kong GB: Dinky Kong & Dixie Kong disassembly
 
-This is a partial diassembly which builds a ROM of Donkey Kong GB: Dinky Kong & Dixie Kong (the Japanese GBC-only version of Donkey Kong Land III). This does not build the retail GB-only English versions.
+This is a partial diassembly which builds a ROM of Donkey Kong GB: Dinky Kong & Dixie Kong (the Japanese GBC-only version of Donkey Kong Land III) with bug fixes and enhancements. This does not build the retail GB-only English versions.
+
+This is a work in progress; while there is already an English patch of the game that contains bug fixes and enhancements, it is a direct ROM edit, so this aims to have a proper disassembly of the patch.
+
+This branch does not changes related to translating the text; see the `tr_en` branch for that.
 
 # Building
 
