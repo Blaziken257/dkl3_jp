@@ -199,12 +199,12 @@ MapAnim_PrimatePlains:
     ld   a, [wFrameCounter]
     and  3
     and  a
-    jp   nz,.label4156
+    jp   nz, .label4156
     call $3690
     ld   c, 0
     and  $0F
     cp   7
-    jp   nz,.label4146
+    jp   nz, .label4146
     ld   c, $20
 
 .label4146:
