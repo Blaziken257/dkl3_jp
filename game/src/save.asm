@@ -4,15 +4,6 @@ DEF FILE_1 EQU $A000
 DEF FILE_2 EQU $A050
 DEF FILE_3 EQU $A0A0
 
-SECTION "Main", ROM0[$0150]
-Main::
-    ld sp, $DFFF
-    cp $11
-    ld a, BANK(DMG_ERR_MSG)
-    ld [REG_MBC5_ROMBANK], a
-    jp nz, DMG_ERR_MSG
-
-
 SECTION "Main - Load Saves", ROM0[$0160]
 MainSaves::
     ld a, BANK(LoadSaves)
@@ -73,8 +64,8 @@ CheckFile::
     inc b
     inc b               ; Copy from valid block 1 to block 3
     
-CopyFile::               ; Originally buggy in both DKL2 and DKL3 because the stack was pushed and popped in the wrong order.
-                         ; pop bc; push bc were removed below from patch to fix copying bug, and moved to precede call CopyFile
+CopyFile::               ; Buggy in both DKL2 and DKL3 because the stack was pushed and popped in the wrong order.
+                         ; pop bc; push bc were removed below from English patch to fix copying bug, and moved to precede call CopyFile
     pop bc               
     push bc              ; BUG: This subroutine was intended to use hl as the source address and bc as the destination address, but instead, bc is the return address of this subroutine. Therefore, if a file is corrupted, but a backup copy has a valid checksum, this subroutine that was intended to recover a corrupted save does nothing!
                          ; This bug also exists in DKL2.
@@ -126,7 +117,3 @@ VerifyChecksum::
     cp c
     pop hl
     ret  
-
-SECTION "DMG error message", ROMX[$6C47], BANK[$23]
-DMG_ERR_MSG::
-; Stubbed for now
