@@ -325,6 +325,7 @@ MapAnim_Water:
     inc  [hl]
     dec  hl
     xor  a
+
 .label420F:
     ldi  [hl], a
     ld   a, [hl]
@@ -332,12 +333,14 @@ MapAnim_Water:
     ld   hl, $5034
     ld   b, 0
     ld   c, $50
+
 .label421A:
     and  a
     jp   z, .label4223
     dec  a
     add  hl, bc
     jp   .label421A
+
 .label4223:
     ld   bc, $9010
     ld   e, 5
@@ -358,6 +361,7 @@ MapAnim_Wrinkly:
     cp   a, 1
     jp   nz, .label427F
     ld   c, $20
+
 .label427F:
     ld   b, 0
     ld   hl, $5234
@@ -406,6 +410,7 @@ MapAnim_FactorySmoke:
     and  $10
     jp   nz, .label42CD
     ld   c, $30
+
 .label42CD:
     ld   b, 0
     ld   hl, $46EC
