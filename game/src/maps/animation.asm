@@ -120,10 +120,10 @@ MapAnim_Codswallop:
 .skipCrank:
     ret  
 
-
 SECTION "Map Animation - Northern Kremisphere", ROMX[$41C5], BANK[$25]
 MapAnim_NorthernKremisphere:
-    ret
+    jp   MapAnim_Water
+
 SECTION "Map Animation - Primate Plains", ROMX[$40AC], BANK[$25]
 MapAnim_PrimatePlains:
     ld   a, [wFrameCounter]
@@ -136,6 +136,7 @@ MapAnim_PrimatePlains:
     cp   1
     jp   nz, .label40C4
     ld   c, $40
+
 ; TODO: Clarify lables from bgb dump
 .label40C4:
     ld   b, 0
@@ -198,12 +199,12 @@ MapAnim_PrimatePlains:
     ld   a, [wFrameCounter]
     and  3
     and  a
-    jp   nz,.label4156
+    jp   nz, .label4156
     call $3690
     ld   c, 0
     and  $0F
     cp   7
-    jp   nz,.label4146
+    jp   nz, .label4146
     ld   c, $20
 
 .label4146:
@@ -232,6 +233,7 @@ MapAnim_Blackforest:
     cp   7
     jp   nz, .label4176
     ld   c, $30
+
 .label4176:
     ld   b, 0
     ld   hl, $5344
@@ -252,18 +254,46 @@ MapAnim_Blackforest:
     call $422D
     jp   MapAnim_Water
 
-
-
-
 SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
 MapAnim_GreatLakes:
-    ret
+    ld   bc, $94E0
+    ld   de, $95A0
+    call MapAnim_Waterfall
+    ld   bc, $8910
+    call MapAnim_Wrinkly
+    ld   bc, $8B00
+    ld   de, $8B50
+    call MapAnim_SheepyShop
+    ld   bc, $9540
+    ld   de, $95D0
+    call MapAnim_FactorySmoke
+    jp   MapAnim_Water
+
 SECTION "Map Animation - The Lost World", ROMX[$41C8], BANK[$25]
 MapAnim_LostWorld:
-    ret
+    ld   bc, $89B0
+    ld   de, $89E0
+    call MapAnim_SheepyShop
+    ld   bc, $88E0
+    call MapAnim_Wrinkly
+    ld   bc, $92F0
+    ld   de, $9370
+    jp   MapAnim_FactorySmoke
+
 SECTION "Map Animation - Tin Can Valley", ROMX[$41E0], BANK[$25]
 MapAnim_TinCanValley:
-    ret
+    ld   bc, $9540
+    ld   de, $9610
+    call MapAnim_Waterfall
+    ld   bc, $8BE0
+    ld   de, $8CE0
+    call MapAnim_SheepyShop
+    ld   bc, $8C60
+    call MapAnim_Wrinkly
+    ld   bc, $9520
+    ld   de, $95D0
+    call $42BF
+    ; Slides into the water animation
 
 SECTION "Map Animation - Waterfall", ROMX[$422D], BANK[$25]
 MapAnim_Waterfall:
@@ -303,12 +333,6 @@ MapAnim_Waterfall:
     ld   d, $1F
     jp   $3309
 
-
-
-
-
-
-
 SECTION "Map Animation - Water", ROMX[$4201], BANK[$25]
 MapAnim_Water:
     ld   hl, $DF8C
@@ -320,6 +344,7 @@ MapAnim_Water:
     inc  [hl]
     dec  hl
     xor  a
+
 .label420F:
     ldi  [hl], a
     ld   a, [hl]
@@ -327,12 +352,14 @@ MapAnim_Water:
     ld   hl, $5034
     ld   b, 0
     ld   c, $50
+
 .label421A:
     and  a
     jp   z, .label4223
     dec  a
     add  hl, bc
     jp   .label421A
+
 .label4223:
     ld   bc, $9010
     ld   e, 5
@@ -353,6 +380,7 @@ MapAnim_Wrinkly:
     cp   a, 1
     jp   nz, .label427F
     ld   c, $20
+
 .label427F:
     ld   b, 0
     ld   hl, $5234
@@ -401,6 +429,7 @@ MapAnim_FactorySmoke:
     and  $10
     jp   nz, .label42CD
     ld   c, $30
+
 .label42CD:
     ld   b, 0
     ld   hl, $46EC
