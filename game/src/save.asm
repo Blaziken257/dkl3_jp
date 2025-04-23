@@ -25,16 +25,20 @@ CheckFile::
     inc h                ; Checksum of first block fails. Check second block.
     call VerifyChecksum
     jr nz, .CheckThirdBlock
+    pop  bc              ; Bugfix: Pop and push bc BEFORE calling CopyFile!
+    push bc              ; This also means remove these instructions at the start of CopyFile.
     call CopyFile        ; Copy from second (valid) block to first block
-                         ; BUG: CopyFile pops the return address as the destination address
+                         ; Bugfix: CopyFile now pops the address for the currently corrupted copy as the destination address
     jr .ValidFile
     
 .CheckThirdBlock
     inc h               ; Checksum of second block fails. Check third and final block.
     call VerifyChecksum
     jr nz, .EraseFile
+    pop  bc              ; Same bugfix applies here
+    push bc
     call CopyFile        ; Copy from third (valid) block to first block
-                         ; BUG: CopyFile pops the return address as the destination address
+                         ; Bugfix: CopyFile now pops the address for the currently corrupted copy as the destination address
     jr .ValidFile
     
 .EraseFile
@@ -63,13 +67,28 @@ CheckFile::
     ld c, l
     inc b
     inc b               ; Copy from valid block 1 to block 3
-    
+    jp CopyFile         ; Moved to empty space, since this entire fix requires more bytes
+    nop  ; Since CopyFile was moved elsewhere, fill the original space with zeros
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+    nop  
+
+
+; Need a section (unlike the original ROM since this subroutine was moved to empty space
+; to accommodate that the bugfix requires extra space)
+SECTION "Copy File", ROMX[$7A00], BANK[$3]
 CopyFile::               ; Buggy in both DKL2 and DKL3 because the stack was pushed and popped in the wrong order.
                          ; pop bc; push bc were removed below from English patch to fix copying bug, and moved to precede call CopyFile
-    pop bc               
-    push bc              ; BUG: This subroutine was intended to use hl as the source address and bc as the destination address, but instead, bc is the return address of this subroutine. Therefore, if a file is corrupted, but a backup copy has a valid checksum, this subroutine that was intended to recover a corrupted save does nothing!
-                         ; This bug also exists in DKL2.
-                         ; To fix this, remove the push bc/pop bc in this subroutine and place it before every call of CopyFile.
+                         ; REMOVED pop bc and push bc instructions; now these appear before a call when necessary
     ld a, $0A
     ld [REG_MBC5_SRAMENABLE], a
     ld e, $50
@@ -82,7 +101,9 @@ CopyFile::               ; Buggy in both DKL2 and DKL3 because the stack was pus
     xor a
     ld [REG_MBC5_SRAMENABLE], a
     ret  
-    
+
+; Same location as in original ROM
+SECTION "Verify Checksum", ROMX[$7605], BANK[$3]
 VerifyChecksum::
     push hl
     ld a, $0A
