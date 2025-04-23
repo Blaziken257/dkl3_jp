@@ -1,16 +1,19 @@
 INCLUDE "registers.inc"
 INCLUDE "macros.asm"
 
-; Initial work to animate world maps, which is missing in the Japanese version.
-; This actually takes the code present in the retail English version (starts at 5:614A there) and ports it over here.
-; Only Cape Codswallop and Primate Plains are present for now.
+; Code to animate world maps, which is missing in the Japanese version
+; (a holdover from the Japanese Sep. 2020 Gigaleak prototype, which didn't have enough ROM space to fit it).
+; This actually takes the code present in the retail English version (starts at 5:614A there), including quirks like
+; redundant "and" instructions, and ports it over here.
+; All world maps are animated.
 
 DEF wCurrentWorld EQU $FFAD
 DEF wFrameCounter EQU $DE9E
 DEF wMapAnimCounter EQU $DF8B
 
-; Repoint the dummied subroutine to a new, empty bank, since there's so much
-; empty space in the Japanese ROM
+; Repoint the dummied subroutine to a new, empty bank, since there's ample empty space in the Japanese retail ROM
+; (The prototype English ROM, retail English ROMs, and Japanese prototype ROM were all 512KB,
+; but the retail Japanese ROM was doubled to 1MB).
 SECTION "Map Animation Routine", ROM0[$125D]
     ld   a, $25
     ld   [REG_MBC5_ROMBANK], a
@@ -42,7 +45,10 @@ SECTION "Map Animation - Cape Codswallop", ROMX[$401C], BANK[$25]
 MapAnim_Codswallop:
     ld   a, [wFrameCounter]  ; DE9E
     and  $07
-    and  a  ; Might be redundant, this was present in the original English version
+    and  a  ; Likely redundant since both of these and instructions, depending on the value,
+            ; either set the z flag, or unset it. This was present in the original English version.
+            ; This happens in other places as well.
+            ; Eventually, this can be optimized in the future.
     jp   nz, .afterMillAnim
 
     ld   hl, wMapAnimCounter ; DF8B
