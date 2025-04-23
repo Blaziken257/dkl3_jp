@@ -129,16 +129,16 @@ MapAnim_PrimatePlains:
     ld   a, [wFrameCounter]
     and  3
     cp   2
-    jp   nz, .label40E3
+    jp   nz, .PrimateLabel2
     call $3690
     ld   c, 0
     and  3
     cp   1
-    jp   nz, .label40C4
+    jp   nz, .PrimateLabel1
     ld   c, $40
 
-; TODO: Clarify lables from bgb dump
-.label40C4:
+; TODO: Clarify labels
+.PrimateLabel1:
     ld   b, 0
     ld   hl, $51B4
     add  hl, bc
@@ -154,19 +154,19 @@ MapAnim_PrimatePlains:
     ld   d, $1F
     call $3309
 
-.label40E3:
+.PrimateLabel2:
     ld   a, [wFrameCounter]
     and  7
     and  a
-    jp   nz, .label412F
+    jp   nz, .PrimateLabel4
     ld   hl, wMapAnimCounter
     ld   a, [hl]
     inc  a
     cp   3
-    jp   c, .label40F7
+    jp   c, .PrimateLabel3
     xor  a
 
-.label40F7:
+.PrimateLabel3:
     ld   [hl],a
     sla  a
     sla  a
@@ -195,19 +195,19 @@ MapAnim_PrimatePlains:
     ld   d, $1F
     call $3311
 
-.label412F:
+.PrimateLabel4:
     ld   a, [wFrameCounter]
     and  3
     and  a
-    jp   nz, .label4156
+    jp   nz, .PrimateLabel5
     call $3690
     ld   c, 0
     and  $0F
     cp   7
-    jp   nz, .label4146
+    jp   nz, .PrimateLabel6
     ld   c, $20
 
-.label4146:
+.PrimateLabel6:
     ld   b, 0
     ld   hl, $5304
     add  hl, bc
@@ -216,7 +216,7 @@ MapAnim_PrimatePlains:
     ld   d, $1F
     call $3309
 
-.label4156:
+.PrimateLabel5:
     jp   MapAnim_Water
 
 SECTION "Map Animation - Blackforest Plateau", ROMX[$4159], BANK[$25]
@@ -231,10 +231,10 @@ MapAnim_Blackforest:
     ld   c, 0
     and  $0F
     cp   7
-    jp   nz, .label4176
+    jp   nz, .BlackforestLabel
     ld   c, $30
 
-.label4176:
+.BlackforestLabel:
     ld   b, 0
     ld   hl, $5344
     add  hl, bc
@@ -292,7 +292,7 @@ MapAnim_TinCanValley:
     call MapAnim_Wrinkly
     ld   bc, $9520
     ld   de, $95D0
-    call $42BF
+    call MapAnim_FactorySmoke
     ; Slides into the water animation
 
 SECTION "Map Animation - Waterfall", ROMX[$422D], BANK[$25]
@@ -307,10 +307,10 @@ MapAnim_Waterfall:
     ld   a, [hl]
     inc  a
     cp   3
-    jp   c, .label4241
+    jp   c, .WaterfallLabel
     xor  a
 
-.label4241:
+.WaterfallLabel:
     ld   [hl], a
     sla  a
     sla  a
@@ -339,13 +339,13 @@ MapAnim_Water:
     ld   a, [hl]
     inc  a
     cp   12
-    jp   nz, .label420F
+    jp   nz, .WaterLabel1
     inc  hl
     inc  [hl]
     dec  hl
     xor  a
 
-.label420F:
+.WaterLabel1:
     ldi  [hl], a
     ld   a, [hl]
     and  3
@@ -353,14 +353,14 @@ MapAnim_Water:
     ld   b, 0
     ld   c, $50
 
-.label421A:
+.WaterLabel2:
     and  a
-    jp   z, .label4223
+    jp   z, .WaterLabel3
     dec  a
     add  hl, bc
-    jp   .label421A
+    jp   .WaterLabel2
 
-.label4223:
+.WaterLabel3:
     ld   bc, $9010
     ld   e, 5
     ld   d, $1F
@@ -378,10 +378,10 @@ MapAnim_Wrinkly:
     ld   c, 0
     and  a, 3
     cp   a, 1
-    jp   nz, .label427F
+    jp   nz, .WrinklyLabel
     ld   c, $20
 
-.label427F:
+.WrinklyLabel:
     ld   b, 0
     ld   hl, $5234
     add  hl, bc
@@ -402,9 +402,10 @@ MapAnim_SheepyShop:
     ld   c, 0
     and  $0F
     cp   7
-    jp   nz,label42A4
+    jp   nz, .SheepyLabel
     ld   c, $40
-    label42A4:
+
+.SheepyLabel:
     ld   b, 0
     ld   hl, $4FB4
     add  hl, bc
@@ -427,10 +428,10 @@ MapAnim_FactorySmoke:
     ld   c, 0
     ld   a, [wFrameCounter]
     and  $10
-    jp   nz, .label42CD
+    jp   nz, .FactoryLabel
     ld   c, $30
 
-.label42CD:
+.FactoryLabel:
     ld   b, 0
     ld   hl, $46EC
     add  hl, bc
