@@ -256,25 +256,44 @@ MapAnim_Blackforest:
 
 SECTION "Map Animation - Great Ape Lakes", ROMX[$41A1], BANK[$25]
 MapAnim_GreatLakes:
-    ld   bc,$94E0
-    ld   de,$95A0
+    ld   bc, $94E0
+    ld   de, $95A0
     call MapAnim_Waterfall
-    ld   bc,$8910
+    ld   bc, $8910
     call MapAnim_Wrinkly
-    ld   bc,$8B00
-    ld   de,$8B50
+    ld   bc, $8B00
+    ld   de, $8B50
     call MapAnim_SheepyShop
-    ld   bc,$9540
-    ld   de,$95D0
+    ld   bc, $9540
+    ld   de, $95D0
     call MapAnim_FactorySmoke
     jp   MapAnim_Water
 
 SECTION "Map Animation - The Lost World", ROMX[$41C8], BANK[$25]
 MapAnim_LostWorld:
-    ret
+    ld   bc, $89B0
+    ld   de, $89E0
+    call MapAnim_SheepyShop
+    ld   bc, $88E0
+    call MapAnim_Wrinkly
+    ld   bc, $92F0
+    ld   de, $9370
+    jp   MapAnim_FactorySmoke
+
 SECTION "Map Animation - Tin Can Valley", ROMX[$41E0], BANK[$25]
 MapAnim_TinCanValley:
-    ret
+    ld   bc, $9540
+    ld   de, $9610
+    call MapAnim_Waterfall
+    ld   bc, $8BE0
+    ld   de, $8CE0
+    call MapAnim_SheepyShop
+    ld   bc, $8C60
+    call MapAnim_Wrinkly
+    ld   bc, $9520
+    ld   de, $95D0
+    call $42BF
+    ; Slides into the water animation
 
 SECTION "Map Animation - Waterfall", ROMX[$422D], BANK[$25]
 MapAnim_Waterfall:
