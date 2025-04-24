@@ -54,22 +54,12 @@ EnemyDefeated:
     ld   l, e
     jr   z, $25C4 ; If check doesn't match, skip rest of code
     ld   a, [W_Stage_Type] ; Check if stage type == Collect the Stars
-; BUG: Losing a bonus stage (or soft-resetting during one) doesn't reset the enemy/star counter.
-; This means that defeating an enemy in either situation will decrement the counter.
-; Once it reaches zero, the Bonus Coin chime sound effect will play.
-; A fix would involve checking if the stage type != Bash the Baddies!
-;
-; A similar bug exists in the English version of DKL2, but differs in two ways:
-; 1. The bug ALSO exists when collecting bananas
-; 2. The bug DOESN'T exist after soft-resetting during a bonus stage.
-; DKL2 checks if stage type != $FF when defeating an enemy or collecting a banana in a main level, but after leaving a bonus stage, stage type is $FE.
-; The Japanese version of DKL2 resets the star/enemy counter ($C5F9 in that game) to 0 when losing a bonus stage, but this fix didn't make it in any version of DKL3.
-;
-; All versions of DKL2 also has a quirk where this check (stage type != $FF) makes it so that Collect the Stars stages don't have enemies,
-; and that Destroy them All stages don't have stars.
-; Since these checks differ in DKL3, this issue is not present in this game.
-    cp   M_Bonus_Collect_Stars 
-    jr   z, $25E9 ; If current stage type != Collect the Stars, skip rest of code
+; BUG FIX: Modify check from stage type == Collect the Stars to
+; stage type != Bash the Baddies
+; This bug fix prevents the Bonus Coin chime from playing when losing a bonus stage
+; and defeating enemies afterwards.
+    cp   M_Bonus_Bash_Baddies 
+    jr   nz, $25E9 ; If current stage type != Bash the Baddies, skip rest of code
     ld   a, [W_Bonus_Obj_Counter] ; Otherwise, check if star (banana) / enemy counter is 0
     and  a 
     jr   z, $25E9 ; If counter is zero, skip rest of code
