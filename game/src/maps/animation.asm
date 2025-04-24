@@ -1,4 +1,5 @@
 INCLUDE "registers.inc"
+INCLUDE "constants.asm"
 INCLUDE "macros.asm"
 
 ; Code to animate world maps, which is missing in the Japanese version
@@ -6,10 +7,6 @@ INCLUDE "macros.asm"
 ; This actually takes the code present in the retail English version (starts at 5:614A there), including quirks like
 ; redundant "and" instructions, and ports it over here.
 ; All world maps are animated.
-
-DEF wCurrentWorld EQU $FFAD
-DEF wFrameCounter EQU $DE9E
-DEF wMapAnimCounter EQU $DF8B
 
 ; Repoint the dummied subroutine to a new, empty bank, since there's ample empty space in the Japanese retail ROM
 ; (The prototype English ROM, retail English ROMs, and Japanese prototype ROM were all 512KB,
@@ -21,7 +18,7 @@ SECTION "Map Animation Routine", ROM0[$125D]
 
 SECTION "Map Animation Callback", ROMX[$4000], BANK[$25]
 MapAnimCallback:
-    ldh  a, [wCurrentWorld] ; ffad
+    ldh  a, [H_Current_World] ; ffad
     ld   hl, .MapTable
     add  a
     ld   c, a
@@ -43,7 +40,7 @@ MapAnimCallback:
 
 SECTION "Map Animation - Cape Codswallop", ROMX[$401C], BANK[$25]
 MapAnim_Codswallop:
-    ld   a, [wFrameCounter]  ; DE9E
+    ld   a, [W_Frame_Counter]  ; DE9E
     and  $07
     and  a  ; Likely redundant since both of these and instructions, depending on the value,
             ; either set the z flag, or unset it. This was present in the original English version.
@@ -51,7 +48,7 @@ MapAnim_Codswallop:
             ; Eventually, this can be optimized in the future.
     jp   nz, .afterMillAnim
 
-    ld   hl, wMapAnimCounter ; DF8B
+    ld   hl, W_Map_Anim_Counter ; DF8B
     ld   a, [hl]
     inc  a
     cp   3
@@ -95,7 +92,7 @@ MapAnim_Codswallop:
     call MapAnim_SheepyShop
     call MapAnim_Water
 
-    ld   a, [wFrameCounter]  ; DE9E
+    ld   a, [W_Frame_Counter]  ; DE9E
     and  $03
     cp   2
     jp   nz, .skipCrank
@@ -132,7 +129,7 @@ MapAnim_NorthernKremisphere:
 
 SECTION "Map Animation - Primate Plains", ROMX[$40AC], BANK[$25]
 MapAnim_PrimatePlains:
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  3
     cp   2
     jp   nz, .PrimateLabel2
@@ -161,11 +158,11 @@ MapAnim_PrimatePlains:
     call $3309
 
 .PrimateLabel2:
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  7
     and  a
     jp   nz, .PrimateLabel4
-    ld   hl, wMapAnimCounter
+    ld   hl, W_Map_Anim_Counter
     ld   a, [hl]
     inc  a
     cp   3
@@ -202,7 +199,7 @@ MapAnim_PrimatePlains:
     call $3311
 
 .PrimateLabel4:
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  3
     and  a
     jp   nz, .PrimateLabel5
@@ -229,7 +226,7 @@ SECTION "Map Animation - Blackforest Plateau", ROMX[$4159], BANK[$25]
 MapAnim_Blackforest:
     ld   bc, $9550
     call MapAnim_Wrinkly
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  3
     and  a
     jp   nz, $4195
@@ -303,13 +300,13 @@ MapAnim_TinCanValley:
 
 SECTION "Map Animation - Waterfall", ROMX[$422D], BANK[$25]
 MapAnim_Waterfall:
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  7
     and  a
     ret  nz
     push de
     push bc
-    ld   hl, wMapAnimCounter
+    ld   hl, W_Map_Anim_Counter
     ld   a, [hl]
     inc  a
     cp   3
@@ -375,7 +372,7 @@ MapAnim_Water:
 
 SECTION "Map Animation - Wrinkly Refuge", ROMX[$4268], BANK[$25]
 MapAnim_Wrinkly:
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  a, 3
     cp   a, 2
     ret  nz
@@ -398,7 +395,7 @@ MapAnim_Wrinkly:
 
 SECTION "Map Animation - Sheepy Shop", ROMX[$428D], BANK[$25]
 MapAnim_SheepyShop:
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  3
     and  a
     ret  nz
@@ -432,7 +429,7 @@ MapAnim_FactorySmoke:
     push de
     push bc
     ld   c, 0
-    ld   a, [wFrameCounter]
+    ld   a, [W_Frame_Counter]
     and  $10
     jp   nz, .FactoryLabel
     ld   c, $30
